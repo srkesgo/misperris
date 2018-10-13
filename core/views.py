@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Automovil, Marca
 #importamos la mensajeria de django
 from django.contrib import messages
-
+#nuevo comentario
 
 # Create your views here.
 
