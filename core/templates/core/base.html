@@ -35,6 +35,10 @@
            <li>
                <a href="{% url 'logout' %}">Cerrar sesión</a>
            </li>
+
+           <li>
+               <a href="">{{ request.user.first_name }}</a>
+           </li>
            {% else %}
 
            <li>
