@@ -11,15 +11,15 @@
 
 </head>
 <body>
-    {% load crispy_forms_tags %}
-    <div class="container">
+    
+    
         <h2>Ingresa tus credenciales</h2>
 
         <form action="" method="post">
     
             {% csrf_token %}
             <table>
-                {{ form | crispy }}
+                {{ form.as_table }}
             </table>
             <input type="submit" value="Login" class="btn btn-success">
         </form>
@@ -27,7 +27,7 @@
         <a href="{% url 'register' %}">Registrate</a>
         <hr>
         <a href="{% url 'social:begin' 'facebook' %}">Login con Facebook</a>
-    </div>
+    
    
 
 </body>
