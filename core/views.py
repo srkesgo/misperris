@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
-from .models import Automovil, Marca
+from .models import Mascotas,Estado,Raza
 #importamos la mensajeria de django
 from django.contrib import messages
 #nuevo comentario
 from django.contrib.auth.decorators import login_required
 #un decorador nos permite agregar funcionalidad a un metodo
-
+from fcm_django.models import FCMDevice
 
 # Create your views here.
 
@@ -18,52 +18,62 @@ def galeria(request):
 def listado(request):
     #consultaremos a la base de datos para decirle que me entregue
     #todos los automoviles
-    autos = Automovil.objects.all()
+    mascotas = Mascotas.objects.all()
     #llamamos al template y junton con ello le pasamos
     #datos, en este caso el listado de autos que existe en la BBDD
-    return render(request, 'core/listado_automoviles.html',{
-        'autos':autos
+    return render(request, 'core/listado_mascotas.html',{
+        'mascotas':mascotas
     })
 
 @login_required
 def formulario(request):
-    marcas = Marca.objects.all()
+    razas = Raza.objects.all()
     #declaramos el diccionario de variables que se enviaran al template
     variables = {
-        'marcas':marcas
+        'razas':razas
     }
 
     #preguntaremos si la peticion es POST
     if request.POST:
         #instanciar un Automovil
-        auto = Automovil()
-        auto.patente = request.POST.get('txtPatente')
-        auto.modelo = request.POST.get('txtModelo')
-        auto.anio = int(request.POST.get('txtAnio'))
+        mascotas = Mascotas()
+        mascotas.nombre_mascota = request.POST.get('txtPatente')
+        mascotas.raza = request.POST.get('txtModelo')
+        mascotas.Estado = request.POST.get('txtAnio')
         #instanciamos una Marca
-        marca = Marca()
-        marca.id = int(request.POST.get('cboMarca'))
+        raza = Raza()
+        raza.raza = request.POST.get('cBoMarca')
         #dejamos el objeto marca dentro del auto
-        auto.marca = marca
+        mascotas.raza = raza
         #teniendo todos los datos capturados desde
         #el template, guardamos el automovil en la BBDD
         try:
-            auto.save()
+            mascotas.save()
+
+            #obtenemos todos los dispositivos
+            dispositivos = FCMDevice.objects.all()
+            #a cada dispositivo se le envia una notificacion
+            dispositivos.send_message(
+                title="Alerta MisPerris",
+                body="Una nueva mascota ha sido agregado",
+                icon="/static/core/img/logo.png"
+            )
+            
             variables['mensaje'] = "Guardado correctamente"
         except:
             variables['mensaje'] = "No se ha podido guardar"
 
-    return render(request, 'core/formulario_automovil.html',variables)
+    return render(request, 'core/formulario_mascotas.html',variables)
 
 
 def eliminar(request, id):
 
     #para eliminar es necesario primero buscar el automovil
-    auto = Automovil.objects.get(id=id)
+    mascotas = Mascotas.objects.get(id=id)
 
     #una vez encontrado el automovil se procede a eliminarlo
     try:
-        auto.delete()
+        mascotas.delete()
         mensaje = "Eliminado correctamente"
         messages.success(request, mensaje)
     except:
@@ -75,30 +85,31 @@ def eliminar(request, id):
 
 def modificar_automovil(request, id):
 
-    marcas = Marca.objects.all()
+    raza = Raza.objects.all()
     #buscamos el automovil en la BBDD por su ID
-    auto = Automovil.objects.get(id=id)
+    mascotas = Mascotas.objects.get(id=id)
     variables = {
-        'marcas':marcas,
-        'auto':auto
+        'raza':raza,
+        'mascotas':mascotas
     }
 
     if request.POST:
         #si la peticion es POST recibimos las variables
-        auto = Automovil()
-        auto.id = int(request.POST.get('txtId'))
-        auto.patente = request.POST.get('txtPatente')
-        auto.modelo = request.POST.get('txtModelo')
-        auto.anio = int(request.POST.get('txtAnio'))
+        mascotas = Mascotas()
+        mascotas.nombre_mascota =  request.POST.get('txtId')
+        mascotas.raza = request.POST.get('txtPatente')
+        mascotas.genero= request.POST.get('txtModelo')
+        mascotas.fecha_ingreso = int(request.POST.get('txtAnio'))
+        mascotas.fecha_nacimiento = int(request.POST.get('txtAnio'))
         #para recibir la marca creamos un objeto de tipo Marca
-        marca = Marca()
-        marca.id = int(request.POST.get('cboMarca'))
+        raza = Raza()
+        raza.raza = request.POST.get('cboMarca')
         #le pasamos la marca completa al automovil
-        auto.marca = marca
+        mascotas.raza = raza
 
         #ahora procederemos a actualizar el automovil
         try:
-            auto.save()
+            mascotas.save()
             messages.success(request, "Actualizado correctamente")
         except:
             messages.error(request, "No se ha podido actualizar")
@@ -106,4 +117,4 @@ def modificar_automovil(request, id):
         #le haremos un redirect al usuario de vuelta hacia el listado   
         return redirect('listado')
 
-    return render(request, 'core/modificar_automovil.html', variables)
+    return render(request, 'core/modificar_mascotas.html', variables)

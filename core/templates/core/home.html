@@ -1,16 +1,40 @@
 {% extends 'core/base.html' %}
-
+{% load staticfiles%}
 
 {% block contenido %}
 
+
+<div class="contenido">
 <div>
-            
-    <h2>Titulo de la primera columna</h2>
-    <p>Parrafo de la primera columna</p>
+<h1 class="titulo_contenido" >RESCATE</h1>
+<br>
+<h4 class="subtitulo_contenido" >ETAPA UNO</h4>
+<br>
+<hr class="linea">
+<br>
+<p class="texto_contenido">Rescatamos perros en situacion de peligro y/o abandono.Los rehabilitamos y los</p>
+<p class="texto_contenido"> preparamos para buscarles un hogar</p>
+<br>
+<br>
+<img class="rescate_logo" src="{% static 'core/img/rescate.jpg' %}" alt="rescate_perro">
 </div>
+
 <div>
-    <h2>Titulo de la segunda columna</h2>
-    <p>Parrafo de la segunda columna</p>
+
+        <img class="comida_logo" src="{% static 'core/img/crowfunding.jpg' %}" alt="comida">
+        <h1 class="titulo_contenido">CROWDFUNDING</h1>
+        <br>
+        <h4 class="subtitulo_contenido" >FINANCIAMIENTO</h4>
+        <br>
+        <hr  class="linea">
+        <br>
+        <p class="texto_contenido">Sigue nuestas redes sociales para informarte acerca de las diversas campañas y </p>
+        <p class="texto_contenido">actividades que realizamos para obtener financiamiento para seguir ayudando</p>
+        <br>
+        <br>
+       
+</div>
+
 </div>
 
 

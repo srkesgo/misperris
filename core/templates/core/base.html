@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+<!--cargamos el plugin pwa-->
+{% load pwa %}
 <head>
+    <!--Instalamos el serviceworker-->
+    {% progressive_web_app_meta %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Automotora</title>
+    <title>MisPerris</title>
     {% load static %}
+    <link rel="icon" href="{% static 'core/img/logo.png' %}">
     <link rel="stylesheet" href="{% static 'core/css/estilos.css' %}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -15,14 +20,100 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
     
+    
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase-messaging.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDEaPMZ38uq2DwIhEpsOXDSRZ737XvsN1Q",
+        authDomain: "MisPerris-43afc.firebaseapp.com",
+        databaseURL: "https://MisPerris-43afc.firebaseio.com",
+        projectId: "MisPerris-43afc",
+        storageBucket: "MisPerris-43afc.appspot.com",
+        messagingSenderId: "393993915876"
+    };
+    firebase.initializeApp(config);
+
+    //OBTENEMOS UN OBJETO MESSAGING
+    const messaging = firebase.messaging();
+    //vamos a registra nuestro serviceworker con firebase
+    navigator
+    .serviceWorker
+    .register('./serviceworker.js')
+    .then(function(register) {
+        //le pasamos el objeto registrado con el serviceworker a firebase
+        messaging.useServiceWorker(register);
+
+        //mostramos al usuario una ventana para preguntarle si acepta
+        //que le enviemos notificaciones al navegador
+        messaging
+        .requestPermission()
+        //este then se ejecutara en caso que el usuario haya aceptado
+        //que le mostremos notificaciones
+        .then(function() {
+            console.log("el usuario aceptó el envío de notificaciones");
+            //una vez aceptado el permiso, se genera un token
+            //unico que nos identifica como usuarios
+            //asdfad23243jkjbier3434scsdfer
+            return messaging.getToken();
+        })
+        //el segundo then recibe el token generado en el anterior
+        .then(function(token) {
+            console.log(token)
+
+            //en este paso es necesario enviar el token a nuestra aplicacion
+            //de django para almacenarlo
+            //$.post
+            fetch('api/agregar-token/', {
+                method:'POST',
+                body:JSON.stringify({
+                    'token':token
+                })
+            })
+            .then(function() {
+                console.log("token enviado")
+            })
+
+        })
+        //los then anteriores solo se ejecutaran cuando el usuario haya aceptado
+        //que le mostremos notificaciones
+        .catch(function(err){
+            //este catch se ejecuta cuando el usuario no haya aceptado
+            //que le mostremos notificaciones
+            console.log("El usuario no ha aceptado conceder permisos : " + err)
+        })
+
+    })
+
+    //recibimos el mensaje que viene desde firebase
+    messaging.onMessage(function(payload) {
+        //esta funcion se ejecuta cuando se recibe la notificacion
+        //dentro de payload viene el mensaje 
+        
+        var options = {
+            body:payload.notification.body,
+            icon:payload.notification.icon
+        }
+
+        var title = payload.notification.title
+
+        //cuando llegue el mensaje mostramos la notificacion
+        var mensaje = new Notification(title, options)
+        
+    })
+
+    
+    </script>
+
 </head>
 <body>
     <!--este es un comentario-->
    <header>
-       <img class="logo" src="{% static 'core/img/automovillogo.jpg' %}" alt="logo">
+       <img class="logo" src="{% static 'core/img/logo.png' %}" alt="logo">
        <ul class="navegacion">
            <li>
-               <a href="http://www.google.cl">Home</a>
+               <a href="{% url 'home' %}">Home</a>
            </li>
            <li>
                <a href="#">Contacto</a>
@@ -36,9 +127,6 @@
                <a href="{% url 'logout' %}">Cerrar sesión</a>
            </li>
 
-           <li>
-               <a href="">{{ request.user.first_name }}</a>
-           </li>
            {% else %}
 
            <li>
@@ -54,18 +142,18 @@
     <div class="landing">
         <div class="slider">
             <div>
-                <img title="automovil gris" class="imagen_landing" src="{% static 'core/img/automovil.png' %}" alt="automovil">   
+                <img title="Tom" class="imagen_landing" src="{% static 'core/img/adoptados/Tom.jpg' %}" alt="Perro">   
             </div>
             <div>
-                <img title="automovil rojo" class="imagen_landing" src="{% static 'core/img/auto2.png' %}" alt="automovil">   
+                <img title="Apolo" class="imagen_landing" src="{% static 'core/img/adoptados/Apolo.jpg' %}" alt="Perro">   
             </div>
             <div>
-                <img title="automovil blanco" class="imagen_landing" src="{% static 'core/img/auto3.png' %}" alt="automovil">   
+                <img title="Duqe" class="imagen_landing" src="{% static 'core/img/adoptados/Duque.jpg' %}" alt="Perro">   
             </div>
         </div>
        
         <div class="landing_inferior">
-            <h1 class="color_blanco centrar_texto">La mejor automotora del país</h1>
+            <h1 class="color_blanco centrar_texto">La mejor veterinaria del país</h1>
             <h1 class="color_blanco centrar_texto">+569 99999999</h1>
             <ul class="social">
                 <li>
@@ -93,6 +181,6 @@
         <hr>
         <h3 class="color_blanco centrar_texto">2018</h3>
     </footer>
- 
+    {% load staticfiles%}
 </body>
 </html>

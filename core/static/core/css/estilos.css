@@ -8,7 +8,7 @@
 }
 
 .bx-wrapper {
-    background-color:#e51e3f!important;
+    background-color:#6BFD27!important;
     border:none!important;
     box-shadow: none!important;
 }
@@ -21,7 +21,7 @@
 header {
     width: 100%;
     height: 80px;
-    background-color: #a10d21;
+    background-color: #51C71A!important;
     display: flex;
     /*
     valores posibles de la propiedad justify-content
@@ -33,7 +33,47 @@ header {
     */
     justify-content: space-between;
 }
+.linea{
+    margin-right: 30px;
+    width: 50px;
+float: right;
 
+}
+ 
+.rescate_logo{
+    
+    float: right;
+    margin-right: 30px;
+    width: 380px;
+    height: 180px;
+}
+.titulo_contenido{
+    margin-right: 30px;
+    text-align: right;
+ font-weight: bold;
+ font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+ }
+
+.subtitulo_contenido{
+    margin-right: 30px;
+    text-align: right;
+    font-family: sans-serif;;
+    color: lightslategray;
+}
+
+.texto_contenido{
+    margin-right: 30px;
+    text-align: right;
+    font-family: sans-serif;
+    color: lightslategray;
+}
+.comida_logo{
+ 
+    width: 380px;
+    height: 180px;
+    
+    
+}
 .logo {
     width: 180px;
     height: 60px;
@@ -52,7 +92,7 @@ header {
     margin-right: 20px;
     width: 100px;
     height: 36px;
-    background-color: #d61010;
+    background-color: #6BFD27;
     text-align: center;
     padding-top: 16px;
     transition: border-radius 0.5s;
@@ -67,14 +107,14 @@ header {
 }
 
 .navegacion li a {
-    color:white;
+    color:rgb(222, 255, 206);
     font-weight: bold;
 }
 
 .landing {
     width: 100%;
     height: 520px;
-    background-color: #e51e3f;
+    background-color: #6BFD27;
 }
 
 .imagen_landing {
